@@ -56,8 +56,11 @@ def encode_binary_columns(df: pd.DataFrame) -> pd.DataFrame:
                 df[col] = df[col].map({'Yes': 1, 'No': 0})
         - Remember to handle 'gender' separately since it has different values.
     """
-    # TODO: Convert binary columns to 1/0
-    pass
+    df['gender'] = df['gender'].map({'Female': 1, 'Male': 0})
+    yes_no_columns = ['Partner', 'Dependents', 'PhoneService', 'PaperlessBilling', 'Churn', 'SeniorCitizen']
+    for col in yes_no_columns:
+        df[col] = df[col].map({'Yes': 1, 'No': 0})
+    return df
 
 
 def create_tenure_groups(df: pd.DataFrame) -> pd.DataFrame:
@@ -89,8 +92,13 @@ def create_tenure_groups(df: pd.DataFrame) -> pd.DataFrame:
           using .astype(str) so it's easier to work with later.
         - Assign the result to df['tenure_group']
     """
-    # TODO: Create tenure groups using pd.cut()
-    pass
+    df['tenure_group'] = pd.cut(
+        df['tenure'],
+        bins=[0, 12, 24, 48, 60, 72],
+        labels=['0-1 year', '1-2 years', '2-4 years', '4-5 years', '5-6 years']
+    )
+    df['tenure_group'] = df['tenure_group'].astype(str)
+    return df
 
 
 def encode_multi_category_columns(df: pd.DataFrame) -> pd.DataFrame:
@@ -124,8 +132,13 @@ def encode_multi_category_columns(df: pd.DataFrame) -> pd.DataFrame:
           knowing it's not A or B means it must be C — so we only need 2 columns.
         - This returns a new dataframe, so assign the result: df = pd.get_dummies(...)
     """
-    # TODO: Create dummy variables for multi-category columns
-    pass
+    multi_category_columns = [
+        'MultipleLines', 'InternetService', 'OnlineSecurity', 'OnlineBackup',
+        'DeviceProtection', 'TechSupport', 'StreamingTV', 'StreamingMovies',
+        'Contract', 'PaymentMethod'
+    ]
+    df = pd.get_dummies(df, columns=multi_category_columns, drop_first=True)
+    return df
 
 
 def save_engineered_data(df: pd.DataFrame) -> None:
@@ -137,7 +150,7 @@ def save_engineered_data(df: pd.DataFrame) -> None:
 
     Saves to: data/cleaned/telco_churn_engineered.csv (without the index)
     """
-    # TODO: Save to ENGINEERED_DATA_PATH using df.to_csv(..., index=False)
+    df.to_csv(ENGINEERED_DATA_PATH, index=False)
     pass
 
 
