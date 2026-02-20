@@ -35,3 +35,7 @@ ENV/
 outputs/figures/*.png
 outputs/reports/*.txt
 data/cleaned/*.csv
+
+# Ignore the .gitignore file itself if you have a local version with different rules
+.gitignore
+fe.ipynb
